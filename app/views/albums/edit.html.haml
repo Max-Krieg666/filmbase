@@ -1,0 +1,15 @@
+%h1 Редактирование альбома
+
+= render 'form'
+
+= link_to @album, class: 'btn btn-primary' do
+  =fa_icon 'image'
+  Показать
+-if @album.film
+  =link_to film_path(@album.film), class: 'btn btn-info' do
+    =fa_icon 'reply'
+    Назад
+-elsif @album.person
+  =link_to person_path(@album.person), class: 'btn btn-info' do
+    =fa_icon 'reply'
+    К фильму

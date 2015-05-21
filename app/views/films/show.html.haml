@@ -1,0 +1,72 @@
+.page-header
+  %h1
+    =@film.name
+    -if @film.origin_name.present?
+      %small=@film.origin_name
+-if Film.manage?(@current_user)
+  .btn-toolbar
+    =link_to edit_film_path(@film), class: 'btn btn-primary' do
+      =fa_icon 'edit'
+      Редактировать
+    =link_to @film, data: {method: :delete, confirm: t('helpers.sure')}, class: 'btn btn-danger' do
+      =fa_icon 'trash'
+      Удалить
+    =link_to new_album_path, data: {method: :get}, class: 'btn btn-info' do
+      =fa_icon 'plus'
+      Создать фотоальбом
+.row
+  .col-md-3
+    -if @film.cover?
+      =image_tag @film.cover.url(:medium), alt: @film.name, class: 'img-responsive'
+    -if @film.albums.size>0
+      %br
+      Фотоальбомы:
+      -@film.albums.each do |album|
+        %br
+        .li
+          =link_to "-> #{album.title}",album_path(album)
+          -if album.photos.size>0
+            -if album.photos.where(id: album.cover).load.map{|x| x}.size>0
+              =image_tag album.photos.where(id: album.cover).load.map{|x| x}[0].object.url(:medium), class: 'img-responsive'
+            -else
+              =image_tag album.photos.first.object.url(:medium), class: 'img-responsive'
+          -else
+            .text-danger
+              Фотоальбом пуст!
+    -else
+      %br
+      .text-danger
+        Фотоальбомы ещё не добавлены.
+  .col-md-9
+    -if @film.slogan.present?
+      %blockquote
+        %p=@film.slogan
+    %dl
+      -if @film.country
+        %dt=Film.human_attribute_name(:country)
+        %dd=link_to @film.country.name,@film.country
+      -if @film.genre
+        %dt=Film.human_attribute_name(:genre)
+        %dd=link_to @film.genre.name,@film.genre
+      -if @film.length
+        %dt=Film.human_attribute_name(:length)
+        %dd
+          =@film.length
+          =RuPropisju.choose_plural(@film.length,'минута','минуты','минут')
+      -if @film.year
+        %dt=Film.human_attribute_name(:year)
+        %dd=@film.year
+    %div=@film.description
+    -if @film.trailer_url.present?
+      =youtube_tag(@film.trailer_url)
+    -if @film.director
+      %h3=Film.human_attribute_name(:director_id)
+      .list-group
+        =render 'people/person', person: @film.director
+    -if @film.people.any?
+      %h3=Film.human_attribute_name(:people)
+      .list-group
+        -@film.people.each do |person|
+          =render 'people/person', person: person
+
+

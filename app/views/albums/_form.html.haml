@@ -1,0 +1,23 @@
+= form_for @album do |f|
+  =error_messages_for(@album)
+  .row
+    -@album.user_id,@album.user=@current_user.id,@current_user
+    =link_to @album.user, class: 'list-group-item' do
+      Пользователь, добавивший альбом:
+      =@album.user.name
+      =surround ?(,?) do
+        %i=@album.user.email
+        %span.text-muted=@album.user.role_name
+  %br
+  .row
+    = label_tag('album[film_id]', Album.human_attribute_name(:film))
+    = select_film('album[film_id]', @album.film_id)
+    ИЛИ
+    = label_tag('album[person_id]', Album.human_attribute_name(:person))
+    = select_person('album[person_id]', @album.person_id)
+  %br
+  .row
+    = f.label :title
+    = f.text_field :title
+  .actions
+    = f.submit 'Сохранить'

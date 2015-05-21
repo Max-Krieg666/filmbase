@@ -1,0 +1,33 @@
+%h1 Альбомы
+
+%table.table.table-bordered.table-hover.table-condensed
+  %thead
+    %tr
+      %th Фильм
+      %th Пользователь
+      %th Актёр
+      %th Название
+      %th
+      %th
+      %th
+
+  %tbody
+    - @albums.each do |album|
+      %tr
+        -if album.film
+          %td= album.film.name
+        -else
+          %td
+        %td= album.user.name
+        -if album.person
+          %td= album.person.name
+        -else
+          %td
+        %td= album.title
+        %td= link_to 'Показать', album
+        %td= link_to 'Редактировать', edit_album_path(album)
+        %td= link_to 'Удалить', album, :method => :delete, :data => { :confirm => 'Вы уверены?' }
+
+%br
+
+= link_to 'Создать альбом', new_album_path

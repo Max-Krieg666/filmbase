@@ -1,0 +1,32 @@
+-@photo.album=Album.where(id:@photo.album_id).load.map{|x| x}[0]
+-@photo.save
+%p
+  %b Альбом:
+  = @photo.album.title
+-if @photo.album.film_id
+  %p
+    %b Фильм:
+    = @photo.album.film.name
+    = @photo.album.film.year
+-elsif @photo.album.person_id
+  %p
+    %b Актёр:
+    = @photo.album.person.name
+%p
+  -if @photo.title!=""
+    %b Название:
+    = @photo.title
+  -else
+    %b.text-danger Без названия
+%p
+  %b
+  = image_tag @photo.object.url, alt: @photo.title
+%p
+  %b Является ли обложкой альбома?
+  -if @photo.position==0
+    .li.text-danger Нет
+  -else
+    .li.text-danger Да
+%br
+=link_to 'Редактировать', edit_photo_path(@photo), class: 'btn btn-danger'
+=link_to 'Назад', album_path(@photo.album), class: 'btn btn-info'

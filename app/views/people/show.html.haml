@@ -1,0 +1,60 @@
+.page-header
+  %h1
+    =@person.name
+    -if @person.origin_name.present?
+      %small=@person.origin_name
+-if Person.manage?(@current_user)
+  .btn-toolbar
+    =link_to edit_person_path(@person), class: 'btn btn-primary' do
+      =fa_icon 'edit'
+      Редактировать
+    -if @person.can_destroy?
+      =link_to @person, data: {method: :delete, confirm: t('helpers.sure')}, class: 'btn btn-danger' do
+        =fa_icon 'trash'
+        Удалить
+    =link_to new_album_path, data: {method: :get}, class: 'btn btn-info' do
+      =fa_icon 'plus'
+      Создать фотоальбом
+.row
+  .col-md-3
+    -if @person.avatar?
+      =image_tag @person.avatar.url(:medium), alt: @person.name, class: 'img-responsive'
+    -if @person.albums.size>0
+      %br
+      Фотоальбомы:
+      -@person.albums.each do |album|
+        %br
+        .li
+          =link_to "#{album.title}",album_path(album)
+          -if album.photos.size>0
+            -if album.photos.where(id: album.cover).load.map{|x| x}.size>0
+              =image_tag album.photos.where(id: album.cover).object.url(:medium), class: 'img-responsive'
+            -else
+              =image_tag album.photos.first.object.url(:medium), class: 'img-responsive'
+          -else
+            .text-danger
+              Фотоальбом пуст!
+    -else
+      %br
+      .text-danger
+        Фотоальбомы ещё не добавлены.
+  .col-md-9
+    -if @person.birthday
+      %dl
+        %dt=Person.human_attribute_name(:birthday)
+        %dd
+          =l(@person.birthday, format: :long)
+          %span.text-muted
+            =surround ?(,?) do
+              =@person.human_age
+    -if @person.produced_films.any?
+      %h3=Film.human_attribute_name(:director_id)
+      .list-group
+        -@person.produced_films.each do |film|
+          =render 'films/film', film: film
+    -if @person.films.any?
+      %h3=Person.human_attribute_name(:films)
+      .list-group
+        -@person.films.each do |film|
+          =render 'films/film', film: film
+

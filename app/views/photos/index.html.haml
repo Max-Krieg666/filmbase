@@ -1,0 +1,31 @@
+%h1 Загруженные фотографии
+
+%table.table.table-hover.table-condensed.table-bordered
+  %thead
+    %tr
+      %th Фильм
+      %th Актёр
+      %th Альбом
+      %th Название
+      %th Фотография
+      %th
+      %th
+      %th
+
+  %tbody
+    - @photos.each do |photo|
+      %tr
+        -if photo.album.film_id
+          %td= "#{photo.album.film.name} #{photo.album.film.year}"
+        -else
+          %td
+        -if photo.album.person_id
+          %td= "#{photo.album.person.name}"
+        -else
+          %td
+        %td= photo.album.title
+        %td= photo.title
+        %td= image_tag photo.object.url(:thumb), alt: photo.title
+        %td= link_to 'Показать', photo
+        %td= link_to 'Редактировать', edit_photo_path(photo)
+        %td= link_to 'Удалить', photo, :method => :delete, :data => { :confirm => 'Вы уверены?' }

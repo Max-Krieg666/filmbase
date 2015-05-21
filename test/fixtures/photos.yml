@@ -1,0 +1,13 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  album_id: 
+  title: MyString
+  object: 
+  position: 1
+
+two:
+  album_id: 
+  title: MyString
+  object: 
+  position: 1

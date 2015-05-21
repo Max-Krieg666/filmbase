@@ -1,0 +1,20 @@
+= form_for @photo do |f|
+  =f.hidden_field :album_id
+  =error_messages_for(@photo)
+  .row
+    = f.label :title
+    = f.text_field :title, class: "form-control"
+  .row
+    = f.label :object
+    = f.file_field :object, :multiple => true
+  .row
+    = f.label "Сделать обложкой альбома?"
+  .row
+    = f.label " Да"
+    = f.radio_button :position, @photo.id, class: "radio"
+    = f.label " Нет"
+    = f.radio_button :position, 0, class: "radio"
+  %br
+  .actions
+    = f.submit 'Сохранить'
+  %br

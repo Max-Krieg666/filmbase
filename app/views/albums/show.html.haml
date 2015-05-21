@@ -1,0 +1,47 @@
+%p
+  %b Пользователь, добавивший альбом:
+  = @album.user.name
+-if @album.person
+  %p
+    %b Актёр:
+    = @album.person.name
+-elsif @album.film
+  %p
+    %b Фильм:
+    = @album.film.name
+%p
+  %b Название:
+  = @album.title
+-if @album.photos.size>0
+  -if @album.photos.where(id: @album.cover).load.map{|x| x}[0]
+    -photo=@album.photos.where(id: @album.cover).load.map{|x| x}[0]
+  -else
+    -photo=@album.photos.first
+  =link_to photo.object.url do
+    =image_tag photo.object.url(:medium), alt: photo.title
+  %br
+  %br
+  -@album.photos.each do |photo|
+    .col-md-3
+      =link_to photo.object.url do
+        =image_tag photo.object.url(:thumb), alt: photo.title
+      =link_to '->', {:controller => :photos, :action => :show, :id => photo.id}, class: 'btn btn-primary'
+      =link_to 'X', photo_path(photo), class: 'btn btn-primary',
+        data:{confirm: "Действительно удалить?", :controller => :photos, method: :delete}
+-else
+  .li.text-danger= 'Фотоальбом пуст!'
+.row
+%br
+=link_to 'Добавить фотографию',{:action => :new, :controller => :photos,:album_id => @album.id}, class: 'btn btn-primary'
+
+=link_to edit_album_path(@album), class: 'btn btn-danger' do
+  =fa_icon 'edit'
+  Редактировать
+-if @album.film
+  =link_to film_path(@album.film), class: 'btn btn-info' do
+    =fa_icon 'reply'
+    Назад
+-elsif @album.person
+  =link_to person_path(@album.person), class: 'btn btn-info' do
+    =fa_icon 'reply'
+    Назад
