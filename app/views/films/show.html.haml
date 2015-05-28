@@ -15,9 +15,11 @@
       =fa_icon 'plus'
       Создать фотоальбом
 .row
+  -#Country.includes(:films).all.map{|x| x.films.size}.sort.last
   .col-md-3
     -if @film.cover?
-      =image_tag @film.cover.url(:medium), alt: @film.name, class: 'img-responsive'
+      =link_to @film.cover.url do
+        =image_tag @film.cover.url(:medium), alt: @film.name, class: 'img-responsive'
     -if @film.albums.size>0
       %br
       Фотоальбомы:

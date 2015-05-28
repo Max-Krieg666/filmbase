@@ -16,6 +16,7 @@
     = label_tag('album[person_id]', Album.human_attribute_name(:person))
     = select_person('album[person_id]', @album.person_id)
   %br
+
   .row
     = f.label :title
     = f.text_field :title

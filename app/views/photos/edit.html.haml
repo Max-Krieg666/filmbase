@@ -2,14 +2,11 @@
 
 = render 'form'
 
+%br
 = link_to @photo, class: 'btn btn-primary' do
   =fa_icon 'image'
   Показать
--if @photo.album
-  =link_to album_path(@photo.album), class: 'btn btn-info' do
-    =fa_icon 'reply'
-    Назад
--elsif @photo.album
-  =link_to album_path(@photo.album), class: 'btn btn-info' do
-    =fa_icon 'reply'
-    Назад
+
+=link_to album_path(@photo.album), class: 'btn btn-info' do
+  =fa_icon 'reply'
+  Назад к альбому

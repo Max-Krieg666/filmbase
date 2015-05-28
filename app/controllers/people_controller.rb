@@ -7,21 +7,17 @@ class PeopleController < ApplicationController
   def index
     respond_to do |format|
       format.html do
-        @people = Person.ordering.page(params[:page])
+        @people = Person.includes(:produced_films,:films).ordering.page(params[:page])
       end
       format.json do
         @people = Person.search(params[:q]).all
         render json: @people
       end
     end
-
-
   end
-
 
   def show
   end
-
 
   def new
     @person = Person.new
@@ -29,7 +25,6 @@ class PeopleController < ApplicationController
 
   def edit
   end
-
 
   def create
     @person = Person.new(person_params)

@@ -2,16 +2,15 @@
 -@photo.save
 %p
   %b Альбом:
-  = @photo.album.title
+  = link_to "#{@photo.album.title}", @photo.album
 -if @photo.album.film_id
   %p
     %b Фильм:
-    = @photo.album.film.name
-    = @photo.album.film.year
+    = link_to "#{@photo.album.film.name} #{@photo.album.film.year}", @photo.album.film
 -elsif @photo.album.person_id
   %p
     %b Актёр:
-    = @photo.album.person.name
+    = link_to "#{@photo.album.person.name}", @photo.album.person
 %p
   -if @photo.title!=""
     %b Название:

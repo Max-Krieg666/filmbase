@@ -7,14 +7,17 @@
   .row
     = f.label :object
     = f.file_field :object, :multiple => true
-  .row
-    = f.label "Сделать обложкой альбома?"
-  .row
-    = f.label " Да"
-    = f.radio_button :position, @photo.id, class: "radio"
-    = f.label " Нет"
-    = f.radio_button :position, 0, class: "radio"
+  -if Album.find(@photo.album.id).photos.load.map{|x| x}.size!=1
+    .row
+      = f.label "Сделать обложкой альбома?"
+    .row
+      = f.label " Да"
+      -if @photo.id
+        = f.radio_button :position, @photo.id, class: "radio"
+      -else
+        = f.radio_button :position, 1, class: "radio"
+      = f.label " Нет"
+      = f.radio_button :position, 0, class: "radio"
   %br
   .actions
     = f.submit 'Сохранить'
-  %br

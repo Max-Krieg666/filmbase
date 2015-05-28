@@ -2,4 +2,7 @@
 
 = render 'form'
 
-= link_to 'Назад', photos_path
+%br
+=link_to album_path(@photo.album), class: 'btn btn-info' do
+  =fa_icon 'reply'
+  Назад

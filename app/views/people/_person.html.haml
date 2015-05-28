@@ -4,4 +4,7 @@
       .media-left=image_tag person.avatar.url(:thumb), alt: person.name, class: 'media-object'
     .media-body
       %h4.media-heading=person.name
-
+      -if person.films.to_a.size>0
+        %h4.media-body Актер
+      -if person.produced_films.to_a.size>0
+        %h4.media-body Режиссер

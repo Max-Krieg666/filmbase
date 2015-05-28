@@ -1,14 +1,14 @@
 %p
   %b Пользователь, добавивший альбом:
-  = @album.user.name
+  = link_to "#{@album.user.name}", @album.user
 -if @album.person
   %p
     %b Актёр:
-    = @album.person.name
+    = link_to "#{@album.person.name}", @album.person
 -elsif @album.film
   %p
     %b Фильм:
-    = @album.film.name
+    = link_to "#{@album.film.name} #{@album.film.year}", @album.film
 %p
   %b Название:
   = @album.title
@@ -21,13 +21,21 @@
     =image_tag photo.object.url(:medium), alt: photo.title
   %br
   %br
-  -@album.photos.each do |photo|
-    .col-md-3
-      =link_to photo.object.url do
-        =image_tag photo.object.url(:thumb), alt: photo.title
-      =link_to '->', {:controller => :photos, :action => :show, :id => photo.id}, class: 'btn btn-primary'
-      =link_to 'X', photo_path(photo), class: 'btn btn-primary',
-        data:{confirm: "Действительно удалить?", :controller => :photos, method: :delete}
+  -count=0
+  .row
+    -@album.photos.each do |photo|
+      .col-md-3
+        %br
+        =link_to photo.object.url do
+          =image_tag photo.object.url(:thumb), alt: photo.title
+        =link_to '->', {:controller => :photos, :action => :show, :id => photo.id}, class: 'btn btn-primary'
+        =link_to 'X', photo_path(photo), class: 'btn btn-primary',
+          data:{confirm: "Действительно удалить?", :controller => :photos, method: :delete}
+        .li=number_to_human_size photo.object_file_size
+      -count+=1
+      -if count==4
+        -count=0
+        .row
 -else
   .li.text-danger= 'Фотоальбом пуст!'
 .row

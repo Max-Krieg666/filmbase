@@ -26,19 +26,43 @@ class PhotosController < ApplicationController
   # POST /photos
   # POST /photos.json
   def create
-    params[:photo][:object].each do |upload|
-      @photo = Photo.new(photo_params)
-      @photo.object=upload
-      if @photo.album.photos.size==0
-        @photo.position=1
-      else
-        @photo.position=0
+    @photo = Photo.new(photo_params)
+    @first = 0
+    @album = Album.find(@photo.album_id)
+    if params[:photo][:object].blank?
+      flash[:danger]="При сохранении произошла ошибка! Необходимо загрузить хотя бы одну фотографию!"
+      render :new
+    else
+      params[:photo][:object].each do |upload|
+        @photo = Photo.new(photo_params)
+        @photo.object=upload
+        if @photo.album.photos.size==0
+          @photo.position=@photo.id
+          @first=@photo
+        end
+        if !@photo.save
+          render :new
+        end
+        if @photo.position==1
+          if Photo.where(id: @album.cover).load.map{|x| x}.size==1
+            p1=Photo.where(id: @album.cover).load.map{|x| x}[0]
+            p1.position=0
+            p1.save
+          end
+          @photo.position=@photo.id
+          @album.cover=@photo.id
+          @album.save!
+          @photo.save
+        else
+          @photo.position=0
+        end
       end
-      if !@photo.save
-         render :new
+      if @first!=0
+        @album.cover=@first.id
+        @album.save!
       end
+      redirect_to @photo.album, notice: 'Фотографии загружены.'
     end
-    redirect_to @photo.album, notice: 'Фотографии загружены.'
   end
 
   # PATCH/PUT /photos/1
@@ -48,7 +72,7 @@ class PhotosController < ApplicationController
       if @photo.update(photo_params)
         if @photo.position!=0
           @album=@photo.album
-          if Photo.where(id: @album.cover).load.map{|x| x}.size>0
+          if Photo.where(id: @album.cover).load.map{|x| x}.size==1
             p1=Photo.where(id: @album.cover).load.map{|x| x}[0]
             p1.position=0
             p1.save
@@ -68,9 +92,10 @@ class PhotosController < ApplicationController
   # DELETE /photos/1
   # DELETE /photos/1.json
   def destroy
+    alb=@photo.album
     @photo.destroy
     respond_to do |format|
-      format.html { redirect_to photos_url, notice: 'Фотография удалена.' }
+      format.html { redirect_to alb, notice: 'Фотография удалена.' }
       format.json { head :no_content }
     end
   end
